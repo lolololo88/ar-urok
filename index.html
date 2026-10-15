@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="kk">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Қатқыл диск — AR</title>
+    <script src="https://aframe.io/releases/1.5.0/aframe.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/mind-ar@1.2.5/dist/mindar-image-aframe.prod.js"></script>
+    <style>
+      body { margin: 0; overflow: hidden; }
+    </style>
+  </head>
+  <body>
+    <a-scene
+      mindar-image="imageTargetSrc: ./targets.mind; showStats: false; filterMinCF: 0.0001; filterBeta: 0.001"
+      color-space="sRGB"
+      renderer="colorManagement: true, physicallyCorrectLights"
+      vr-mode-ui="enabled: false"
+      device-orientation-permission-ui="enabled: false"
+    >
+      <a-camera position="0 0 0" look-controls="enabled: false"></a-camera>
+
+      <a-light type="ambient" intensity="0.8"></a-light>
+      <a-light type="directional" intensity="1.2" position="1 1 2"></a-light>
+
+      <!-- Целевая картинка: hdd-target.png (ширина картинки = 1, высота ≈ 0.444) -->
+      <a-entity mindar-image-target="targetIndex: 0">
+
+        <!-- Жесткий диск: стоит над фото диска на картинке и плавно «парит» -->
+        <a-entity id="hdd"
+                  position="-0.33 0 0.05"
+                  rotation="-25 0 0"
+                  scale="0.5 0.5 0.5"
+                  animation="property: position; to: -0.33 0 0.15; dur: 1500; easing: easeInOutQuad; loop: true; dir: alternate">
+
+          <!-- Корпус -->
+          <a-box width="0.6" height="0.85" depth="0.06" position="0 0 0.03"
+                 material="color: #8a8f96; metalness: 0.8; roughness: 0.35"></a-box>
+          <!-- Бортик корпуса -->
+          <a-box width="0.6" height="0.03" depth="0.03" position="0 0.41 0.075" color="#6d7279"></a-box>
+          <a-box width="0.6" height="0.03" depth="0.03" position="0 -0.41 0.075" color="#6d7279"></a-box>
+          <a-box width="0.03" height="0.85" depth="0.03" position="0.285 0 0.075" color="#6d7279"></a-box>
+          <a-box width="0.03" height="0.85" depth="0.03" position="-0.285 0 0.075" color="#6d7279"></a-box>
+
+          <!-- Винты по углам -->
+          <a-cylinder radius="0.015" height="0.01" rotation="90 0 0" position="0.255 0.38 0.095" color="#333"></a-cylinder>
+          <a-cylinder radius="0.015" height="0.01" rotation="90 0 0" position="-0.255 0.38 0.095" color="#333"></a-cylinder>
+          <a-cylinder radius="0.015" height="0.01" rotation="90 0 0" position="0.255 -0.38 0.095" color="#333"></a-cylinder>
+          <a-cylinder radius="0.015" height="0.01" rotation="90 0 0" position="-0.255 -0.38 0.095" color="#333"></a-cylinder>
+
+          <!-- Магнитная пластина (вращается) -->
+          <a-entity position="0 0.12 0.065"
+                    animation="property: rotation; from: 0 0 0; to: 0 0 360; dur: 800; easing: linear; loop: true">
+            <a-cylinder radius="0.25" height="0.01" rotation="90 0 0"
+                        material="color: #d9dde3; metalness: 1; roughness: 0.12"></a-cylinder>
+            <!-- Дорожки -->
+            <a-ring radius-inner="0.17" radius-outer="0.172" position="0 0 0.0055" color="#9aa0a8"></a-ring>
+            <a-ring radius-inner="0.12" radius-outer="0.122" position="0 0 0.0055" color="#9aa0a8"></a-ring>
+            <!-- Метка, чтобы было видно вращение -->
+            <a-box width="0.01" height="0.15" depth="0.001" position="0 0.15 0.006" color="#7a8088"></a-box>
+            <!-- Шпиндель -->
+            <a-cylinder radius="0.05" height="0.025" rotation="90 0 0" position="0 0 0.01" color="#555"></a-cylinder>
+            <a-cylinder radius="0.008" height="0.03" rotation="90 0 0" position="0.03 0 0.012" color="#222"></a-cylinder>
+          </a-entity>
+
+          <!-- Блок магнитных головок (качается над пластиной) -->
+          <a-entity position="0.2 -0.28 0.08"
+                    rotation="0 0 2"
+                    animation="property: rotation; from: 0 0 2; to: 0 0 18; dur: 700; easing: easeInOutSine; loop: true; dir: alternate">
+            <a-cylinder radius="0.045" height="0.03" rotation="90 0 0" color="#444"></a-cylinder>
+            <a-box width="0.035" height="0.36" depth="0.008" position="0 0.2 0"
+                   material="color: #b0b5bc; metalness: 0.9; roughness: 0.3"></a-box>
+            <!-- Головка -->
+            <a-box width="0.025" height="0.03" depth="0.012" position="0 0.39 0" color="#c0392b"></a-box>
+          </a-entity>
+
+          <!-- Магнит привода -->
+          <a-box width="0.16" height="0.1" depth="0.02" position="0.18 -0.36 0.07" color="#3b3f45"></a-box>
+
+          <!-- SATA-разъём -->
+          <a-box width="0.22" height="0.04" depth="0.03" position="-0.1 -0.44 0.03" color="#1b1b1b"></a-box>
+
+          <!-- Подпись -->
+          <a-text value="HDD" align="center" color="#1e5aa8" width="1.6"
+                  position="-0.13 -0.33 0.071"></a-text>
+        </a-entity>
+
+        <!-- Заголовок над картинкой -->
+        <a-text value="Qatqyl disk (HDD)" align="center" color="#ffffff" width="1.4"
+                position="0.15 0.3 0.05"></a-text>
+      </a-entity>
+    </a-scene>
+  </body>
+</html>
